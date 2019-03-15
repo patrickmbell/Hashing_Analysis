@@ -1,5 +1,6 @@
 #include <iostream>
-#include <ht_midsquare_chaining.h>
+#include "experiment_1.h"
+
 using namespace std; 
 
 /*

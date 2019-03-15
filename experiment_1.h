@@ -1,4 +1,5 @@
 #pragma once
+
 #include <iostream>
 
 using namespace std;
@@ -6,7 +7,7 @@ using namespace std;
 /*Experiment One will be a hash table using mid square hashing and chaining*/
 namespace experiment_1 {
 	
-	template <typename K, V>
+	template <typename K, typename V>
 	class hashtable {
 	public:
 		
