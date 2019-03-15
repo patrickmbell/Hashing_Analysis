@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "experiment_1.h"
 
 using namespace std; 
@@ -28,6 +29,7 @@ using namespace std;
 
 int main() {
 
+	experiment_1::hashtable<string, int> table(400);
 
 	return 0; 
 }
