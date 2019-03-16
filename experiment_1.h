@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-
+#include <math.h>
 using namespace std;
 
 /*
@@ -41,29 +41,62 @@ namespace experiment_1 {
 			delete[] table; 
 		}
 	
+		void add(const K &key, const V &value);
+		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
+		Node& get(const K &key) {}
+
 	private:
 		Node* table;	//An element is inserted into the array, and each node would have a next pointer since this will be done using chaining. 
 		unsigned int num_elements=0;
 		unsigned int table_size; 
 
-		void hash_function(const K &key);	//mid-square hashing function for Experiment 1. 
-
-		void add(const K &key, const V &value);
-
-		Node& get(const K &key){}
-
 	};
 
 	template <typename K, typename V>
-	void hashtable<K,V>::hash_function(const K &key)
+	int hashtable<K,V>::midsquare_hash(int key)
 	{
 		//For this hashing function. Utilizing reinterpreted cast will be useful in getting an integer value from the key. I need to be careful of not creating hash values that are out of bounds. 
+		//If the passed through type is a string, the ascii value used for hashing will be generated from an average of ascii values per character
+		//If the type is a char, the ascii value will be used
+		//And if a float or double is used, it will be casted to an int
+		//Therefore, for the sake of the experiment, I'll limit the key values to 200. 
+
+		//200^2 = 40,000
+		//The table size for experiment will be 127. 
+		//127 in binary is 1111111, 7 bits. 
+		//2^16 = 65,536, 16 bits. 
+		int key_squared = key * key; 
+
+		int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
+		int key_bits = (int) (log2((double)key_squared) + 0.99);
+
+
+
+		return num_bits; 
 	}
 
 	template <typename K, typename V>
 	void hashtable<K, V>::add(const K &key, const V &value) 
 	{
-	
+		int hash; 
+		if (std::is_same<K, string>::value)
+		{
+			int avg_char = 0;
+			for (unsigned int i = 0; i < key.length(); i++)
+			{
+				int temp = int(key[i]);
+				avg_char += temp; 
+			}
+			avg_char = (avg_char) / (key.length() - 1);
+			
+			hash = midsquare_hash(avg_char);
+
+		}
+		else
+			cout << "Not a string\n";
+
+
+
 	}
 
 }
