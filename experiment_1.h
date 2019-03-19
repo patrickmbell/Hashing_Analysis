@@ -18,23 +18,50 @@ namespace experiment_1 {
 		struct Node {
 			//int load_factor;
 			//bool collision; 
-			Node* next; //The Nodes next pointer if a collision occurs and requires chaining 
+			Node* next = nullptr; //The Nodes next pointer if a collision occurs and requires chaining 
  
 			V value;
 			string key; 
+			int index; 
 
-			Node(string key, V value) {
+			Node(string key, V value, int index) {
 				this->key = key;
 				this->value = value;
+				this->index = index; 
 			}
 
 			Node(){}
 
 		};
 
+		struct iterator {
+			Node* head; 
+
+			~iterator()
+			{
+				while (head)
+				{
+					Node* temp = head;
+					head = head->next; 
+					delete temp;
+				}
+			}
+
+			void add(Node* node) {
+
+				Node* temp = head; 
+				while (temp->next)
+				{
+					temp = temp->next;
+				}
+
+				temp->next = node; 
+			}
+		};
+
 		hashtable(unsigned int size)
 		{
-			table = new Node[size];
+			table = new Node*[size];
 			table_size = size;
 
 		}
@@ -48,10 +75,12 @@ namespace experiment_1 {
 			delete[] table; 
 		}
 	
-		void print_array(){
-			for(unsigned int i = 0; i < table_size; i++)
+		void print_table(){
+			Node* temp = iter.head;
+			while (temp)
 			{
-					cout << table[i].key; 
+				cout << temp->key << " " << temp->value << " " << temp->index << endl; 
+				temp = temp->next; 
 			}
 		}
 
@@ -60,11 +89,12 @@ namespace experiment_1 {
 		Node& get(const string &key) {}
 
 	private:
-		Node* table;	//An element is inserted into the array, and each node would have a next pointer since this will be done using chaining. 
+		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements=0;
 		unsigned int table_size; 
 		const int max_bits = 16;
 		unsigned int load;
+		iterator iter;
 
 	};
 
@@ -89,7 +119,7 @@ namespace experiment_1 {
 		//int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
 		//int key_bits = (int) (log2((double)key_squared) + 0.99);
 
-		int hash = key % table_size;	
+		int hash = key_squared % table_size;	
 
 		return hash;
 	}
@@ -117,7 +147,20 @@ namespace experiment_1 {
 
 				hash = midsquare_hash(avg_char);
 
-				this->table[hash] = Node(key, value); 
+				Node* temp = new Node(key, value, hash);
+				this->table[hash] = temp;
+
+				if (this->num_elements == 0)
+				{
+					this->iter.head = temp;
+					num_elements++; 
+					return;
+				}
+				else {
+					iter.add(temp);
+					num_elements++; 
+				}
+				
 	
 		}
 		catch (exception &e)
