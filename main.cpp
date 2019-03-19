@@ -35,7 +35,12 @@ int main() {
 	experiment_1::hashtable<int> table(127);
 	table.add("Patrick ", 20);
 	table.add("the rock", 512);
+	table.add("Jeremy spoke in class today", 1995);
+	table.add("Spam", 565);
+	table.add("Bo! Bo! Bo!", 1990);
 
+	table.print_array(); 
+	cout << "" << endl; 
 
 	return 0; 
 }

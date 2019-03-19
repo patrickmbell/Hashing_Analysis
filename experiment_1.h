@@ -19,9 +19,9 @@ namespace experiment_1 {
 			//int load_factor;
 			//bool collision; 
 			Node* next; //The Nodes next pointer if a collision occurs and requires chaining 
-
-			//auto key; 
+ 
 			V value;
+			string key; 
 
 			Node(string key, V value) {
 				this->key = key;
@@ -48,6 +48,13 @@ namespace experiment_1 {
 			delete[] table; 
 		}
 	
+		void print_array(){
+			for(unsigned int i = 0; i < table_size; i++)
+			{
+					cout << table[i].key; 
+			}
+		}
+
 		void add(const string &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 		Node& get(const string &key) {}
@@ -57,6 +64,7 @@ namespace experiment_1 {
 		unsigned int num_elements=0;
 		unsigned int table_size; 
 		const int max_bits = 16;
+		unsigned int load;
 
 	};
 
@@ -74,16 +82,16 @@ namespace experiment_1 {
 		//127 in binary is 1111111, 7 bits. 
 		//2^16 = 65,536, 16 bits. 
 
-		cout << key << " ";
+		//cout << key << " ";
 		
 		int key_squared = key * key; 
 
-		int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
-		int key_bits = (int) (log2((double)key_squared) + 0.99);
+		//int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
+		//int key_bits = (int) (log2((double)key_squared) + 0.99);
 
-		
+		int hash = key % table_size;	
 
-		return num_bits; 
+		return hash;
 	}
 
 	template <typename V>
@@ -108,6 +116,8 @@ namespace experiment_1 {
 				}
 
 				hash = midsquare_hash(avg_char);
+
+				this->table[hash] = Node(key, value); 
 	
 		}
 		catch (exception &e)
