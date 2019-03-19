@@ -25,6 +25,13 @@ namespace experiment_1 {
 
 		};
 
+		/*
+		class Iterator {	//How cool would this be, making an iterator of the map. 
+			
+
+		};
+		*/
+
 		hashtable(unsigned int size)
 		{
 			table = new Node[size];
@@ -49,6 +56,7 @@ namespace experiment_1 {
 		Node* table;	//An element is inserted into the array, and each node would have a next pointer since this will be done using chaining. 
 		unsigned int num_elements=0;
 		unsigned int table_size; 
+		const int max_bits = 16;
 
 	};
 
@@ -65,12 +73,13 @@ namespace experiment_1 {
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
 		//2^16 = 65,536, 16 bits. 
+
 		int key_squared = key * key; 
 
 		int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
 		int key_bits = (int) (log2((double)key_squared) + 0.99);
 
-
+		
 
 		return num_bits; 
 	}
@@ -79,24 +88,41 @@ namespace experiment_1 {
 	void hashtable<K, V>::add(const K &key, const V &value) 
 	{
 		int hash; 
-		if (std::is_same<K, string>::value)
-		{
-			int avg_char = 0;
-			for (unsigned int i = 0; i < key.length(); i++)
+
+		try {
+			if (std::is_same<K, string>::value)
 			{
-				int temp = int(key[i]);
-				avg_char += temp; 
+				int avg_char = 0;
+				for (unsigned int i = 0; i < key.length(); i++)
+				{
+					int temp = int(key[i]);
+					avg_char += temp;
+				}
+				avg_char = (avg_char) / (key.length() - 1);
+
+				if (avg_char > 200)
+				{
+					cout << "Error: key value too high\n";
+					return;
+				}
+
+				hash = midsquare_hash(avg_char);
+
 			}
-			avg_char = (avg_char) / (key.length() - 1);
-			
-			hash = midsquare_hash(avg_char);
+			else {
 
+				if ((int)key > 200)
+				{
+					cout << "Error: key value too high\n";
+					return;
+				}
+
+			}
 		}
-		else
-			cout << "Not a string\n";
-
-
-
+		catch (exception &e)
+		{
+			cout << "Uh oh!" << endl; 
+		}
 	}
 
 }

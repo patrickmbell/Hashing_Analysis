@@ -29,9 +29,11 @@ using namespace std;
 
 int main() {
 
-	experiment_1::hashtable<string, int> table(127);
-	table.add("plop", 20);
+//	experiment_1::hashtable<string, int> table(127);
+//	table.add("plop", 20);
 
+	experiment_1::hashtable<int, int> table(127);
+	table.add(4, 66);
 
 	return 0; 
 }
