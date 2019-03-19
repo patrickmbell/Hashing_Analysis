@@ -11,7 +11,7 @@ using namespace std;
 /*Experiment One will be a hash table using mid square hashing and chaining*/
 namespace experiment_1 {
 	
-	template <typename K, typename V>
+	template <typename V>
 	class hashtable {
 	public:
 		
@@ -20,9 +20,18 @@ namespace experiment_1 {
 			//bool collision; 
 			Node* next; //The Nodes next pointer if a collision occurs and requires chaining 
 
-			K key; 
+			auto key; 
 			V value;
 
+			Node(string key, V value) {
+				this->key = key;
+				this->value = value;
+			}
+
+			Node(int key, V value) {
+				this->key = key;
+				this->value = value;
+			}
 		};
 
 		/*
@@ -32,8 +41,13 @@ namespace experiment_1 {
 		};
 		*/
 
-		hashtable(unsigned int size)
+		hashtable(unsigned int size, bool int_key)
 		{
+			if (int_key) {
+				this->int_as_keys = true;
+				this->string_as_keys = false; 
+			}
+
 			table = new Node[size];
 			table_size = size;
 
@@ -48,7 +62,8 @@ namespace experiment_1 {
 			delete[] table; 
 		}
 	
-		void add(const K &key, const V &value);
+		void add(const string &key, const V &value);
+		void add(const int &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 		Node& get(const K &key) {}
 
@@ -57,11 +72,12 @@ namespace experiment_1 {
 		unsigned int num_elements=0;
 		unsigned int table_size; 
 		const int max_bits = 16;
-
+		bool string_as_keys = true;
+		bool int_as_keys = false; 
 	};
 
-	template <typename K, typename V>
-	int hashtable<K,V>::midsquare_hash(int key)
+	template <typename V>
+	int hashtable<V>::midsquare_hash(int key)
 	{
 		//For this hashing function. Utilizing reinterpreted cast will be useful in getting an integer value from the key. I need to be careful of not creating hash values that are out of bounds. 
 		//If the passed through type is a string, the ascii value used for hashing will be generated from an average of ascii values per character
@@ -84,10 +100,63 @@ namespace experiment_1 {
 		return num_bits; 
 	}
 
-	template <typename K, typename V>
-	void hashtable<K, V>::add(const K &key, const V &value) 
+	template <typename V>
+	void hashtable<V>::add(const int &key, const V &value)
+	{
+		int hash;
+
+		if (!this->string_as_keys)
+		{
+			cout << "Error, please use ints as the keys " << endl;
+			return;
+		}
+
+		try {
+			if (std::is_same<K, string>::value)
+			{
+				int avg_char = 0;
+				for (unsigned int i = 0; i < key.length(); i++)
+				{
+					int temp = int(key[i]);
+					avg_char += temp;
+				}
+				avg_char = (avg_char) / (key.length() - 1);
+
+				if (avg_char > 200)
+				{
+					cout << "Error: key value too high\n";
+					return;
+				}
+
+				hash = midsquare_hash(avg_char);
+
+			}
+			else {
+
+				if ((int)key > 200)
+				{
+					cout << "Error: key value too high\n";
+					return;
+				}
+
+			}
+		}
+		catch (exception &e)
+		{
+			cout << "Uh oh!" << endl;
+		}
+	}
+
+	template <typename V>
+	void hashtable<V>::add(const string &key, const V &value) 
 	{
 		int hash; 
+		
+		if (!this->int_as_keys)
+		{
+			cout << "Error, please use strings as the keys " << endl;
+			return;
+		}
 
 		try {
 			if (std::is_same<K, string>::value)
