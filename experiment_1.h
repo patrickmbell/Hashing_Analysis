@@ -16,8 +16,7 @@ namespace experiment_1 {
 	public:
 		
 		struct Node {
-			//int load_factor;
-			//bool collision; 
+
 			Node* next = nullptr; //The Nodes next pointer if a collision occurs and requires chaining 
  
 			V value;
@@ -34,6 +33,7 @@ namespace experiment_1 {
 
 		};
 
+		//Might get rid of this. 
 		struct iterator {
 			Node* head; 
 
@@ -107,21 +107,24 @@ namespace experiment_1 {
 		//And if a float or double is used, it will be casted to an int
 		//Therefore, for the sake of the experiment, I'll limit the key values to 200. 
 
-		//200^2 = 40,000
+		//127^2 = 40,000
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
-		//2^16 = 65,536, 16 bits. 
+		//
+		//2^16 = 65,536, 17 bits. 
 
-		//cout << key << " ";
+		int operation =( 17-log2(table_size + 0.99) ) / 2;
 		
 		int key_squared = key * key; 
+		key_squared = key_squared >> 5;
+		key_squared = key_squared % table_size; 
 
 		//int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
 		//int key_bits = (int) (log2((double)key_squared) + 0.99);
 
-		int hash = key_squared % table_size;	
+		//int hash = key_squared % table_size;	
 
-		return hash;
+		return key_squared;
 	}
 
 	template <typename V>

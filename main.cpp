@@ -32,7 +32,7 @@ int main() {
 //	experiment_1::hashtable<string, int> table(127);
 //	table.add("plop", 20);
 
-	experiment_1::hashtable<int> table(29);
+	experiment_1::hashtable<int> table(127);
 	table.add("Patrick ", 20);
 	table.add("the rock", 512);
 	table.add("Jeremy spoke in class today", 1995);
