@@ -41,7 +41,7 @@ void test_hashfunction(experiment_1::hashtable<V> &table)
 	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	//200 being the max key value I've decided upon 
 
 
-	while (table.load_factor <= 1)
+	while (table.get_load_factor() <= 1)
 	{
 		int rand_key = range(seed);
 

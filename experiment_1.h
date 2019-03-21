@@ -21,6 +21,7 @@ namespace experiment_1 {
 	class hashtable {
 	public:
 		
+		//A Node struct used for storing the key-value pairs into an array. 
 		struct Node {
 
 			Node* next = nullptr; //The Nodes next pointer if a collision occurs and requires chaining 
@@ -41,6 +42,7 @@ namespace experiment_1 {
 
 		};
 
+		//Hashtable class constuctors 
 		hashtable(unsigned int size)
 		{
 			table = new Node*[size]();
@@ -55,45 +57,19 @@ namespace experiment_1 {
 		{	
 			delete[] table; 
 		}
+
+		//Mutators
+		void add(const int &key, const V &value);
+		Node* get(const int &key);
 		
+		//Accessors
 		unsigned int get_table_size() { return table_size; }
 		unsigned int get_num_collisions() { return num_collisions; }
-		unsigned int get_load_factor() { return load_factor; }
-
-		bool is_full() {
-			if (num_array_elements == table_size || num_array_elements > table_size)
-				return true;
-
-		return false; 
-		}
-
-		void add(const int &key, const V &value);
-		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
+		float get_load_factor() { return load_factor; }
 		
-		Node* get(const int &key) {
-			
-			Node* node = table[midsquare_hash(key)];
-			
-			if (node->next)	//indicating that there is a collision. 
-			{
-				while (node->next)
-				{
-					if (node->key == key)
-					{
-						return node;
-					}
-
-					node = node->next; 
-				}
-			}
-
-
-			return node;
-		}
- 
-
-
-		float load_factor = 0;
+		//Hashing Function
+		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
+	
 	private:
 		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements=0;
@@ -101,7 +77,7 @@ namespace experiment_1 {
 		unsigned int table_size; 
 		const int max_bits = 16;
 		unsigned int num_array_elements = 0; 
-		
+		float load_factor = 0;
 
 	};
 
@@ -129,8 +105,6 @@ namespace experiment_1 {
 
 		return key_squared;
 	}
-
-
 
 	template <typename V>
 	void hashtable<V>::add(const int &key, const V &value) 
@@ -183,21 +157,28 @@ namespace experiment_1 {
 				temp->next = node;
 
 			}
+	}
 
-			/*
-			if (this->num_elements == 0)
+	template <typename V>
+	typename hashtable<V>::Node* hashtable<V>::get(const int &key) {
+
+		Node* node = table[midsquare_hash(key)];
+
+		if (node->next)	//indicating that there is a collision. 
+		{
+			while (node->next)
 			{
-				this->iter.head = temp;
-				num_elements++; 
-				return;
+				if (node->key == key)
+				{
+					return node;
+				}
+
+				node = node->next;
 			}
-			else {
-				iter.add(temp);
-				num_elements++; 
-			}
-			*/
+		}
 
 
+		return node;
 	}
 
 }

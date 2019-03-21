@@ -20,6 +20,7 @@ namespace experiment_2 {
 	class hashtable {
 	public:
 
+		//A Node struct used for storing the key-value pairs into an array. 
 		struct Node {
 
 			Node* next = nullptr; //The Nodes next pointer if a collision occurs and requires chaining 
@@ -40,7 +41,7 @@ namespace experiment_2 {
 
 		};
 
-		//Constructor
+		//Constructors
 		hashtable(unsigned int size)
 		{
 			table = new Node*[size]();
@@ -57,41 +58,18 @@ namespace experiment_2 {
 			delete[] table;
 		}
 
-		bool is_full() {
-			if (num_array_elements == table_size || num_array_elements > table_size)
-				return true;
-
-			return false;
-		}
-
-		void add(const int &key, const V &value);
-		int key_mod_table(int key);	//mid-square hashing function for Experiment 1. 
-
-		Node* get(const int &key) {
-
-			Node* node = table[key_mod_table(key)];
-
-			if (node->next)	//indicating that there is a collision. 
-			{
-				while (node->next)
-				{
-					if (node->key == key)
-					{
-						return node;
-					}
-
-					node = node->next;
-				}
-			}
-
-
-			return node;
-		}
 		//Accessors
 		unsigned int get_table_size() { return table_size; }
 		unsigned int get_num_collisions() { return num_collisions; }
 		float get_load_factor() { return load_factor; }
 		
+		//Mutators
+		void add(const int &key, const V &value);
+		Node* get(const int &key);
+
+
+		//Hashing Function
+		int key_mod_table(int key);	//mid-square hashing function for Experiment 1. 
 
 	private:
 		Node** table;	//An array of Node pointers. 
@@ -173,6 +151,28 @@ namespace experiment_2 {
 
 		}
 
+	}
+	
+	template <typename V>
+	typename hashtable<V>::Node* hashtable<V>::get(const int &key) {
+
+		Node* node = table[key_mod_table(key)];
+
+		if (node->next)	//indicating that there is a collision. 
+		{
+			while (node->next)
+			{
+				if (node->key == key)
+				{
+					return node;
+				}
+
+				node = node->next;
+			}
+		}
+
+
+		return node;
 	}
 
 }
