@@ -75,13 +75,14 @@ namespace experiment_1 {
 		}
 
 		~hashtable()
-		{
+		{	
 			delete[] table; 
 		}
 		
 		unsigned int get_table_size() { return table_size; }
 		unsigned int get_num_collisions() { return num_collisions; }
-
+		unsigned int get_load_factor() { return load_factor; }
+		/*
 		void print_table(){
 			Node* temp = iter.head;
 			while (temp)
@@ -90,7 +91,7 @@ namespace experiment_1 {
 				temp = temp->next; 
 			}
 		}
-
+		*/
 		void add(const int &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 		Node* get(const int &key) {
@@ -106,8 +107,8 @@ namespace experiment_1 {
 		unsigned int num_collisions = 0;
 		unsigned int table_size; 
 		const int max_bits = 16;
-		unsigned int load;
-		iterator iter;
+		float load_factor=0;
+		//iterator iter;
 
 	};
 
@@ -159,9 +160,19 @@ namespace experiment_1 {
 			return;
 		}
 
+			if(num_elements == table_size)
+			{
+				cout << "Table full" << endl;
+				return; 
+			}
+
 			hash = midsquare_hash(key);
 
 			Node* node = new Node(key, value, hash);
+
+			num_elements++; 
+
+			load_factor = (float) num_elements / (float) table_size; 
 
 			if (!table[hash])
 			{
@@ -170,7 +181,9 @@ namespace experiment_1 {
 			}
 		
 			else {
-				cout << "Collision Detectected! Key: " << key << endl; 
+				cout << "Collision Detectected! Key: " << key; 
+				cout << " Load: " << this->load_factor << endl; 
+
 				num_collisions++;
 				Node* temp = table[hash];
 
@@ -184,7 +197,6 @@ namespace experiment_1 {
 
 			}
 
-			num_elements++; 
 			/*
 			if (this->num_elements == 0)
 			{

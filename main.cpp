@@ -36,8 +36,9 @@ void test_hashfunction(experiment_1::hashtable<V> &table) {
 
 	mt19937 seed(time(0));
 	uniform_int_distribution<int> range(0, 200);	//200 being the max key value I've decided upon 
+	unsigned int size = table.get_table_size() ;
 
-	while (i < (table.get_table_size() / 2))
+	while (i < size)
 	{
 		int rand_key = range(seed);
 
@@ -61,14 +62,11 @@ void test_hashfunction(experiment_1::hashtable<V> &table) {
 
 int main() {
 
-//	experiment_1::hashtable<string, int> table(127);
-//	table.add("plop", 20);
-
-	experiment_1::hashtable<string> table(127);
+	experiment_1::hashtable<string> table(60);
 	table.add(20, "Patrick");
 	table.add(42, "Cheech");
 	table.add(187, "Blink");
-	table.add(45, "EAting Spam");
+	table.add(45, "KRS ");
 	table.add(90, "Bo! Bo! Bo!");
 
 	test_hashfunction(table);
@@ -76,14 +74,14 @@ int main() {
 	//table.print_table();
 	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
-	int input;
+	//int input;
 
-	while (true) {
+	// while (true) {
 
-		cin >> input;
-		auto node = table.get(input);
-		cout << node->index << " " << node->value << endl;
-	}
+	// 	cin >> input;
+	// 	auto node = table.get(input);
+	// 	cout << node->index << " " << node->value << endl;
+	// }
 
 	return 0; 
 }
