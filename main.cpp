@@ -29,6 +29,68 @@ using namespace std;
 
 
 */
+//Test functions. 
+template <typename V>
+void test_hashfunction(experiment_1::hashtable<V> &table)
+{
+
+	unsigned int i = 0;
+	multimap<int, bool> map;
+
+	mt19937 seed(time(0));
+	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	//200 being the max key value I've decided upon 
+
+
+	while (table.load_factor <= 1)
+	{
+		int rand_key = range(seed);
+
+
+		auto search = map.find(rand_key);
+		while (search != map.end())
+		{
+			rand_key = range(seed);
+			search = map.find(rand_key);
+		}
+
+		map.emplace(rand_key, true);
+
+		table.add(rand_key, "BDP");
+
+	}
+
+}
+
+template <typename V>
+void test_hashfunction(experiment_2::hashtable<V> &table)
+{
+
+	unsigned int i = 0;
+	multimap<int, bool> map;
+
+	mt19937 seed(time(0));
+	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	//200 being the max key value I've decided upon 
+
+
+	while (table.get_load_factor() <= 1)
+	{
+		int rand_key = range(seed);
+
+
+		auto search = map.find(rand_key);
+		while (search != map.end())
+		{
+			rand_key = range(seed);
+			search = map.find(rand_key);
+		}
+
+		map.emplace(rand_key, true);
+
+		table.add(rand_key, "BDP");
+
+	}
+
+}
 
 int main() {
 
@@ -39,12 +101,12 @@ int main() {
 	//table.add(45, "KRS ");
 	//table.add(90, "Bo! Bo! Bo!");
 
-	table.test_hashfunction();
+	test_hashfunction(table);
 
 	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
 	experiment_2::hashtable<string> table2(113);
-	table2.test_hashfunction();
+	test_hashfunction(table2);
 
 	cout << "\nNumber of Collisions: " << table2.get_num_collisions() << endl;
 

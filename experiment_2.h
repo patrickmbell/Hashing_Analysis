@@ -9,7 +9,11 @@
 
 using namespace std;
 
-/*Experiment One will be a hash table using mid square hashing and chaining*/
+/*
+
+	Experiment Two is Key Mod Table Hashing and Chaining Collisions 
+
+*/
 namespace experiment_2 {
 
 	template <typename V>
@@ -36,32 +40,7 @@ namespace experiment_2 {
 
 		};
 
-		//Might get rid of this. 
-		struct iterator {
-			Node* head;
-
-			~iterator()
-			{
-				while (head)
-				{
-					Node* temp = head;
-					head = head->next;
-					delete temp;
-				}
-			}
-
-			void add(Node* node) {
-
-				Node* temp = head;
-				while (temp->next)
-				{
-					temp = temp->next;
-				}
-
-				temp->next = node;
-			}
-		};
-
+		//Constructor
 		hashtable(unsigned int size)
 		{
 			table = new Node*[size]();
@@ -78,10 +57,6 @@ namespace experiment_2 {
 			delete[] table;
 		}
 
-		unsigned int get_table_size() { return table_size; }
-		unsigned int get_num_collisions() { return num_collisions; }
-		unsigned int get_load_factor() { return load_factor; }
-
 		bool is_full() {
 			if (num_array_elements == table_size || num_array_elements > table_size)
 				return true;
@@ -90,12 +65,11 @@ namespace experiment_2 {
 		}
 
 		void add(const int &key, const V &value);
-		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
-		void test_hashfunction();
+		int key_mod_table(int key);	//mid-square hashing function for Experiment 1. 
 
 		Node* get(const int &key) {
 
-			Node* node = table[midsquare_hash(key)];
+			Node* node = table[key_mod_table(key)];
 
 			if (node->next)	//indicating that there is a collision. 
 			{
@@ -113,21 +87,26 @@ namespace experiment_2 {
 
 			return node;
 		}
+		//Accessors
+		unsigned int get_table_size() { return table_size; }
+		unsigned int get_num_collisions() { return num_collisions; }
+		float get_load_factor() { return load_factor; }
+		
 
-		float load_factor = 0;
 	private:
 		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements = 0;
 		unsigned int num_collisions = 0;
 		unsigned int table_size;
 		const int max_bits = 16;
+		float load_factor = 0;
 		unsigned int num_array_elements = 0;
 
 
 	};
 
 	template <typename V>
-	int hashtable<V>::midsquare_hash(int key)
+	int hashtable<V>::key_mod_table(int key)
 	{
 		//For this hashing function. Utilizing reinterpreted cast will be useful in getting an integer value from the key. I need to be careful of not creating hash values that are out of bounds. 
 		//If the passed through type is a string, the ascii value used for hashing will be generated from an average of ascii values per character
@@ -143,35 +122,6 @@ namespace experiment_2 {
 	}
 
 	template <typename V>
-	void hashtable<V>::test_hashfunction() {
-
-		unsigned int i = 0;
-		multimap<int, bool> map;
-
-		mt19937 seed(time(0));
-		uniform_int_distribution<int> range(0, size * 3);	//200 being the max key value I've decided upon 
-
-
-		while (load_factor <= 1)
-		{
-			int rand_key = range(seed);
-
-
-			auto search = map.find(rand_key);
-			while (search != map.end())
-			{
-				rand_key = range(seed);
-				search = map.find(rand_key);
-			}
-
-			map.emplace(rand_key, true);
-
-			table.add(rand_key, "BDP");
-
-		}
-	}
-
-	template <typename V>
 	void hashtable<V>::add(const int &key, const V &value)
 	{
 		int hash;
@@ -183,7 +133,7 @@ namespace experiment_2 {
 			return;
 		}
 
-		hash = midsquare_hash(key);
+		hash = key_mod_table(key);
 
 		Node* node = new Node(key, value, hash);
 

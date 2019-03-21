@@ -9,7 +9,12 @@
 
 using namespace std;
 
-/*Experiment One will be a hash table using mid square hashing and chaining*/
+/*
+
+	Experiment One is Midsquare Hashing and Key Mod Table Collisions.
+
+*/
+
 namespace experiment_1 {
 	
 	template <typename V>
@@ -36,37 +41,10 @@ namespace experiment_1 {
 
 		};
 
-		//Might get rid of this. 
-		struct iterator {
-			Node* head; 
-
-			~iterator()
-			{
-				while (head)
-				{
-					Node* temp = head;
-					head = head->next; 
-					delete temp;
-				}
-			}
-
-			void add(Node* node) {
-
-				Node* temp = head; 
-				while (temp->next)
-				{
-					temp = temp->next;
-				}
-
-				temp->next = node; 
-			}
-		};
-
 		hashtable(unsigned int size)
 		{
 			table = new Node*[size]();
 			table_size = size;
-
 		}
 
 		hashtable() {
@@ -91,7 +69,6 @@ namespace experiment_1 {
 
 		void add(const int &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
-		void test_hashfunction();
 		
 		Node* get(const int &key) {
 			
@@ -153,34 +130,7 @@ namespace experiment_1 {
 		return key_squared;
 	}
 
-	template <typename V>
-	void hashtable<V>::test_hashfunction() {
 
-		unsigned int i = 0;
-		multimap<int, bool> map;
-
-		mt19937 seed(time(0));
-		uniform_int_distribution<int> range(0, size * 3);	//200 being the max key value I've decided upon 
-
-
-		while (load_factor <= 1)
-		{
-			int rand_key = range(seed);
-
-
-			auto search = map.find(rand_key);
-			while (search != map.end())
-			{
-				rand_key = range(seed);
-				search = map.find(rand_key);
-			}
-
-			map.emplace(rand_key, true);
-
-			table.add(rand_key, "BDP");
-
-		}
-	}
 
 	template <typename V>
 	void hashtable<V>::add(const int &key, const V &value) 
