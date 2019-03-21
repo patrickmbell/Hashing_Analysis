@@ -2,8 +2,8 @@
 #include <random>
 #include <map>
 #include <time.h>
-#include "experiment_1.h"
-#include "experiment_2.h"
+#include "chaining_table.h"
+#include "openaddr_table.h"
 
 using namespace std; 
 
@@ -31,7 +31,7 @@ using namespace std;
 */
 //Test functions. 
 template <typename V>
-void test_hashfunction(experiment_1::hashtable<V> &table)
+void test_hashfunction(chaining_table::hashtable<V> &table)
 {
 
 	unsigned int i = 0;
@@ -62,7 +62,7 @@ void test_hashfunction(experiment_1::hashtable<V> &table)
 }
 
 template <typename V>
-void test_hashfunction(experiment_2::hashtable<V> &table)
+void test_hashfunction(openaddr_table::hashtable<V> &table)
 {
 
 	unsigned int i = 0;
@@ -94,7 +94,7 @@ void test_hashfunction(experiment_2::hashtable<V> &table)
 
 int main() {
 
-	experiment_1::hashtable<string> table(113);
+	chaining_table::hashtable<string> table(113,true);
 	//table.add(20, "Patrick");
 	//table.add(42, "Cheech");
 	//table.add(187, "Blink");
@@ -105,7 +105,7 @@ int main() {
 
 	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
-	experiment_2::hashtable<string> table2(113);
+	chaining_table::hashtable<string> table2(113, false);
 	test_hashfunction(table2);
 
 	cout << "\nNumber of Collisions: " << table2.get_num_collisions() << endl;
