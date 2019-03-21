@@ -34,13 +34,16 @@ void test_hashfunction(experiment_1::hashtable<V> &table) {
 	unsigned int i = 0;
 	multimap<int, bool> map;
 
-	mt19937 seed(time(0));
-	uniform_int_distribution<int> range(0, 200);	//200 being the max key value I've decided upon 
-	unsigned int size = table.get_table_size() ;
+	unsigned int size = table.get_table_size();
 
-	while (i < size)
+	mt19937 seed(time(0));
+	uniform_int_distribution<int> range(0, size*3);	//200 being the max key value I've decided upon 
+	
+
+	while (table.load_factor<=1)
 	{
 		int rand_key = range(seed);
+		
 
 		auto search = map.find(rand_key);
 		while (search != map.end())
@@ -53,8 +56,6 @@ void test_hashfunction(experiment_1::hashtable<V> &table) {
 
 		table.add(rand_key, "Boogie Down Productions"); 
 
-
-		i++;
 	}
 
 
@@ -62,26 +63,17 @@ void test_hashfunction(experiment_1::hashtable<V> &table) {
 
 int main() {
 
-	experiment_1::hashtable<string> table(60);
-	table.add(20, "Patrick");
-	table.add(42, "Cheech");
-	table.add(187, "Blink");
-	table.add(45, "KRS ");
-	table.add(90, "Bo! Bo! Bo!");
+	experiment_1::hashtable<string> table(23);
+	//table.add(20, "Patrick");
+	//table.add(42, "Cheech");
+	//table.add(187, "Blink");
+	//table.add(45, "KRS ");
+	//table.add(90, "Bo! Bo! Bo!");
 
 	test_hashfunction(table);
 
-	//table.print_table();
 	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
-	//int input;
-
-	// while (true) {
-
-	// 	cin >> input;
-	// 	auto node = table.get(input);
-	// 	cout << node->index << " " << node->value << endl;
-	// }
 
 	return 0; 
 }

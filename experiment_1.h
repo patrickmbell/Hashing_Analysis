@@ -82,32 +82,46 @@ namespace experiment_1 {
 		unsigned int get_table_size() { return table_size; }
 		unsigned int get_num_collisions() { return num_collisions; }
 		unsigned int get_load_factor() { return load_factor; }
-		/*
-		void print_table(){
-			Node* temp = iter.head;
-			while (temp)
-			{
-				cout << temp->key << " " << temp->value << " " << temp->index << endl; 
-				temp = temp->next; 
-			}
+
+		bool is_full() {
+			if (num_array_elements == table_size || num_array_elements > table_size)
+				return true;
+
+		return false; 
 		}
-		*/
+
 		void add(const int &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 		Node* get(const int &key) {
+			
 			Node* node = table[midsquare_hash(key)];
+			
+			if (node->next)	//indicating that there is a collision. 
+			{
+				while (node->next)
+				{
+					if (node->key == key)
+					{
+						return node;
+					}
+
+					node = node->next; 
+				}
+			}
+
 
 			return node;
 		}
  
-
+		float load_factor = 0;
 	private:
 		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements=0;
 		unsigned int num_collisions = 0;
 		unsigned int table_size; 
 		const int max_bits = 16;
-		float load_factor=0;
+		unsigned int num_array_elements = 0; 
+		//float load_factor=0;
 		//iterator iter;
 
 	};
@@ -126,20 +140,21 @@ namespace experiment_1 {
 		//127 in binary is 1111111, 7 bits. 
 
 		//2^16 = 65,536, 17 bits. 
-
-		int half = ( 16-log2( table_size ) ) / 2;
+		
+		int half = ( log2((this->table_size*3)*(table_size*3) - 1) - log2( table_size - 1 ) ) / 2;
 		
 		int key_squared = key * key; 
 		key_squared = key_squared >> half;
 		key_squared = key_squared % table_size; 
-
+		
 
 		//int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
-		//int key_bits = (int) (log2((double)key_squared) + 0.99);
+	//	int key_bits = (int) (log2((double)key_squared) + 0.99);
 
-		//int hash = key_squared % table_size;	
+//		int hash = key_squared % table_size;	
 
 		return key_squared;
+		//return key % table_size; 
 	}
 	
 	//template <typename V>
@@ -154,13 +169,8 @@ namespace experiment_1 {
 	{
 		int hash; 
 	
-		if (key > 200)
-		{
-			cout << "Key value too high\n";
-			return;
-		}
 
-			if(num_elements == table_size)
+			if(num_array_elements == table_size)
 			{
 				cout << "Table full" << endl;
 				return; 
@@ -177,17 +187,26 @@ namespace experiment_1 {
 			if (!table[hash])
 			{
 				this->table[hash] = node;
+				num_array_elements++; 
 				return;
 			}
 		
 			else {
-				cout << "Collision Detectected! Key: " << key; 
-				cout << " Load: " << this->load_factor << endl; 
-
-				num_collisions++;
+				
 				Node* temp = table[hash];
 
-				temp->collision = true; 
+				if (!temp->collision)
+				{
+					cout << "Collision Detectected! Key: " << key << " Index: " << hash;
+					cout << " Load: " << this->load_factor << endl;
+
+					temp->collision = true; 
+
+					num_collisions++;
+
+				}
+
+
 				
 				while (temp->next)
 				{
