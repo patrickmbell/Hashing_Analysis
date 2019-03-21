@@ -3,12 +3,11 @@
 #include <iostream>
 #include <string>
 #include <math.h>
+#include <random>
+#include <map>
+#include <time.h>
 
 using namespace std;
-
-/*
-	I might actually do just the string as the key and use a generic type for the value. 
-*/
 
 /*Experiment One will be a hash table using mid square hashing and chaining*/
 namespace experiment_1 {
@@ -92,6 +91,8 @@ namespace experiment_1 {
 
 		void add(const int &key, const V &value);
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
+		void test_hashfunction();
+		
 		Node* get(const int &key) {
 			
 			Node* node = table[midsquare_hash(key)];
@@ -113,6 +114,8 @@ namespace experiment_1 {
 			return node;
 		}
  
+
+
 		float load_factor = 0;
 	private:
 		Node** table;	//An array of Node pointers. 
@@ -121,8 +124,7 @@ namespace experiment_1 {
 		unsigned int table_size; 
 		const int max_bits = 16;
 		unsigned int num_array_elements = 0; 
-		//float load_factor=0;
-		//iterator iter;
+		
 
 	};
 
@@ -138,8 +140,7 @@ namespace experiment_1 {
 		//127^2 = 40,000
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
-
-		//2^16 = 65,536, 17 bits. 
+		
 		
 		int half = ( log2((this->table_size*3)*(table_size*3) - 1) - log2( table_size - 1 ) ) / 2;
 		
@@ -148,21 +149,38 @@ namespace experiment_1 {
 		key_squared = key_squared % table_size; 
 		
 
-		//int num_bits = (int) (log2((double)table_size) + 0.99);	//This should work but you can even do + 0.99 and truncate that to get the consisten number of bits. 
-	//	int key_bits = (int) (log2((double)key_squared) + 0.99);
-
-//		int hash = key_squared % table_size;	
 
 		return key_squared;
-		//return key % table_size; 
 	}
-	
-	//template <typename V>
-	//hashtable<V>::Node& hashtable<V>::get(const int &key) {
-	//	hashtable<V>::Node* node = table[midsquare_hash(key)];
 
-	//	return node; 
-	//}
+	template <typename V>
+	void hashtable<V>::test_hashfunction() {
+
+		unsigned int i = 0;
+		multimap<int, bool> map;
+
+		mt19937 seed(time(0));
+		uniform_int_distribution<int> range(0, size * 3);	//200 being the max key value I've decided upon 
+
+
+		while (load_factor <= 1)
+		{
+			int rand_key = range(seed);
+
+
+			auto search = map.find(rand_key);
+			while (search != map.end())
+			{
+				rand_key = range(seed);
+				search = map.find(rand_key);
+			}
+
+			map.emplace(rand_key, true);
+
+			table.add(rand_key, "BDP");
+
+		}
+	}
 
 	template <typename V>
 	void hashtable<V>::add(const int &key, const V &value) 
