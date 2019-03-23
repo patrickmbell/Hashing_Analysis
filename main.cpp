@@ -1,6 +1,7 @@
 #include <iostream>
 #include <random>
 #include <map>
+#include <fstream>
 #include <time.h>
 #include "chaining_table.h"
 #include "openaddr_table.h"
@@ -94,7 +95,10 @@ void test_hashfunction(openaddr_table::hashtable<V> &table)
 
 int main() {
 
-	chaining_table::hashtable<string> table(113,true);
+	chaining_table::hashtable<string> table(64, true, "size_1.csv");
+	chaining_table::hashtable<string> table2(47, true, "size_2.csv");
+	chaining_table::hashtable<string> table3(113, true, "size_3.csv");
+
 	//table.add(20, "Patrick");
 	//table.add(42, "Cheech");
 	//table.add(187, "Blink");
@@ -105,8 +109,8 @@ int main() {
 
 	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
-	chaining_table::hashtable<string> table2(113, false);
 	test_hashfunction(table2);
+	test_hashfunction(table3);
 
 	cout << "\nNumber of Collisions: " << table2.get_num_collisions() << endl;
 

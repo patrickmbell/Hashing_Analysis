@@ -12,7 +12,6 @@ using namespace std;
 
 /*
 
-	Experiment One is Midsquare Hashing and Key Mod Table Collisions.
 
 */
 
@@ -36,7 +35,6 @@ namespace chaining_table {
 				this->key = key;
 				this->value = value;
 				this->index = index; 
-
 			}
 
 			Node(){}
@@ -50,10 +48,31 @@ namespace chaining_table {
 			table_size = size;
 		}
 
-		hashtable(unsigned int size, bool midsquare_hashing)
+		hashtable(unsigned int size, bool midsquare_hashing, string filename)
 		{
 			table = new Node*[size]();
 			table_size = size; 
+			this->midsquare_hashing = midsquare_hashing;
+			this->filename = filename; 
+			
+			try
+			{
+				file.exceptions(ifstream::badbit | ifstream::failbit);
+				file.open("Hashing_Analysis\\" + filename);
+			}
+				
+			catch (const ifstream::failure& e)
+			{
+				cout << "Error opening file" << endl;
+			}
+			
+		
+		}
+
+		hashtable(unsigned int size, bool midsquare_hashing)
+		{
+			table = new Node*[size]();
+			table_size = size;
 			this->midsquare_hashing = midsquare_hashing;
 		}
 
@@ -64,6 +83,8 @@ namespace chaining_table {
 		~hashtable()
 		{	
 			delete[] table; 
+			file.flush();
+			file.close(); 
 		}
 
 		//Mutators
@@ -79,6 +100,8 @@ namespace chaining_table {
 		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 	
 	private:
+		ofstream file;
+		string filename; 
 		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements=0;
 		unsigned int num_collisions = 0;
@@ -102,14 +125,18 @@ namespace chaining_table {
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
 		
+		int key_bits = log2((table_size * 3) * (table_size * 3)) + 1;
+		int table_bits = log2(table_size) + 1;
+		int difference = key_bits - table_bits; 
 		
-		int half = ( log2((this->table_size*3)*(table_size*3) - 1) - log2( table_size - 1 ) ) / 2;
+		if (difference % 2 != 0)
+			difference += 1;
 		
+		int half = difference / 2; 
 		int key_squared = key * key; 
 		key_squared = key_squared >> half;
 		key_squared = key_squared % table_size; 
 		
-
 
 		return key_squared;
 	}
@@ -151,6 +178,18 @@ namespace chaining_table {
 
 				if (!temp->collision)
 				{
+					num_collisions++;
+					
+					try {
+
+						file << load_factor << ',' << num_collisions << endl;
+
+					}
+					catch (const ifstream::failure& e)
+					{
+						cout << "Error writing to file" << endl;
+					}
+
 					cout << "Collision Detectected! Key: " << key << " Index: " << hash;
 					cout << " Load: " << this->load_factor << endl;
 
@@ -158,7 +197,7 @@ namespace chaining_table {
 
 					temp->collision = true; 
 
-					num_collisions++;
+					
 
 				}
 
