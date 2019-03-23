@@ -58,7 +58,8 @@ namespace chaining_table {
 			try
 			{
 				file.exceptions(ifstream::badbit | ifstream::failbit);
-				file.open("Hashing_Analysis\\" + filename);
+				file.open(filename);
+				file << 0 << ',' << 0 << endl; 
 			}
 				
 			catch (const ifstream::failure& e)
@@ -180,16 +181,6 @@ namespace chaining_table {
 				if (!temp->collision)
 				{
 					num_collisions++;
-					
-					try {
-
-						file << load_factor << ',' << num_collisions << endl;
-
-					}
-					catch (const ifstream::failure& e)
-					{
-						cout << "Error writing to file" << endl;
-					}
 
 					temp->collision = true; 
 				}
@@ -200,6 +191,15 @@ namespace chaining_table {
 				}
 				temp->next = node;
 
+			}
+
+			try 
+			{
+				file << load_factor << ',' << num_collisions << endl;
+			}
+			catch (const ifstream::failure& e)
+			{
+				cout << "Error writing to file" << endl;
 			}
 	}
 
