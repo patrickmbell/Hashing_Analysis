@@ -27,19 +27,18 @@ using namespace std;
 
 	Create plots for each experiment. Include number of collisions versus load factor for the three table sizes. Each experiment should be conducted for three table sizes. 
 
-
-
 */
-//Test functions. 
+
+//Two functions that test the number of collisions given a collision resolution scheme and hashing function. 
 template <typename V>
-void test_hashfunction(chaining_table::hashtable<V> &table)
+void test_hashtable(chaining_table::hashtable<V> &table)
 {
 
 	unsigned int i = 0;
 	multimap<int, bool> map;
 
 	mt19937 seed(time(0));
-	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	//200 being the max key value I've decided upon 
+	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	
 
 
 	while (table.get_load_factor() <= 1)
@@ -53,6 +52,7 @@ void test_hashfunction(chaining_table::hashtable<V> &table)
 			rand_key = range(seed);
 			search = map.find(rand_key);
 		}
+ 
 
 		map.emplace(rand_key, true);
 
@@ -63,17 +63,16 @@ void test_hashfunction(chaining_table::hashtable<V> &table)
 }
 
 template <typename V>
-void test_hashfunction(openaddr_table::hashtable<V> &table)
+void test_hashtable(openaddr_table::hashtable<V> &table)
 {
-
 	unsigned int i = 0;
 	multimap<int, bool> map;
 
 	mt19937 seed(time(0));
-	uniform_int_distribution<int> range(0, table.get_table_size() * 3);	//200 being the max key value I've decided upon 
+	uniform_int_distribution<int> range(0, table.get_table_size() * 3);
 
 
-	while (table.get_load_factor() <= 1)
+	while (table.get_load_factor() < 1)
 	{
 		int rand_key = range(seed);
 
@@ -85,34 +84,35 @@ void test_hashfunction(openaddr_table::hashtable<V> &table)
 			search = map.find(rand_key);
 		}
 
+		cout << rand_key << endl;
+
 		map.emplace(rand_key, true);
 
 		table.add(rand_key, "BDP");
-
+		
 	}
 
 }
 
 int main() {
 
-	chaining_table::hashtable<string> table(64, true, "size_1.csv");
-	chaining_table::hashtable<string> table2(47, true, "size_2.csv");
-	chaining_table::hashtable<string> table3(113, true, "size_3.csv");
+	/*openaddr_table::hashtable<string> table(64, false, "size_1.csv");
+	openaddr_table::hashtable<string> table2(64, true, "size_1.csv");
+	chaining_table::hashtable<string> table3(100, true);
+	chaining_table::hashtable<string> table4(100, false);*/
 
-	//table.add(20, "Patrick");
-	//table.add(42, "Cheech");
-	//table.add(187, "Blink");
-	//table.add(45, "KRS ");
-	//table.add(90, "Bo! Bo! Bo!");
+	chaining_table::hashtable<string> table1(20, true, "size_1.csv");
+	chaining_table::hashtable<string> table2(60, true, "size_2.csv");
+	chaining_table::hashtable<string> table3(190, true, "size_3.csv");
 
-	test_hashfunction(table);
+	test_hashtable(table1);
+	test_hashtable(table2);
+	test_hashtable(table3);
 
-	cout << "\nNumber of Collisions: " << table.get_num_collisions() << endl;
 
-	test_hashfunction(table2);
-	test_hashfunction(table3);
-
-	cout << "\nNumber of Collisions: " << table2.get_num_collisions() << endl;
+	/*cout << "Openaddressing/Midsquare Hash Number of Collisions " << table2.get_num_collisions() << endl;
+	cout << "Chaining/Midsquare Hash Number of Collisions " << table3.get_num_collisions() << endl;
+	cout << "Chaining/Key Mod Table Number of Collisions " << table4.get_num_collisions() << endl;*/
 
 	return 0; 
 }

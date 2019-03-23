@@ -66,8 +66,6 @@ namespace chaining_table {
 				cout << "Tried opening file with windows syntax, Attempting Linux syntax: " << endl;
 				file.open(filename);
 			}
-			
-		
 		}
 
 		hashtable(unsigned int size, bool midsquare_hashing)
@@ -86,6 +84,8 @@ namespace chaining_table {
 			delete[] table; 
 			file.flush();
 			file.close(); 
+
+			cout << "File Closed" << endl;
 		}
 
 		//Mutators
@@ -126,8 +126,8 @@ namespace chaining_table {
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
 		
-		int key_bits = log2((table_size * 3) * (table_size * 3)) + 1;
-		int table_bits = log2(table_size) + 1;
+		int key_bits = log2(((table_size - 1) * 3) * ((table_size - 1) * 3)) + 1;
+		int table_bits = log2(table_size - 1) + 1;
 		int difference = key_bits - table_bits; 
 		
 		if (difference % 2 != 0)
@@ -191,15 +191,7 @@ namespace chaining_table {
 						cout << "Error writing to file" << endl;
 					}
 
-					cout << "Collision Detectected! Key: " << key << " Index: " << hash;
-					cout << " Load: " << this->load_factor << endl;
-
-
-
 					temp->collision = true; 
-
-					
-
 				}
 				
 				while (temp->next)
@@ -211,6 +203,7 @@ namespace chaining_table {
 			}
 	}
 
+	//Need to adjust this for an openaddressing table. 
 	template <typename V>
 	typename hashtable<V>::Node* hashtable<V>::get(const int &key) {
 

@@ -6,14 +6,14 @@
 #include <random>
 #include <map>
 #include <time.h>
+#include <fstream>
 
 using namespace std;
 
 /*
-
-	Experiment Two is Key Mod Table Hashing and Chaining Collisions 
-
+ A hashtable that is capable of utilizing midsquare hashing or key mod tablesize hashing while using an open addressing Collision Resolution Scheme. 
 */
+
 namespace openaddr_table {
 
 	template <typename V>
@@ -23,30 +23,55 @@ namespace openaddr_table {
 		//A Node struct used for storing the key-value pairs into an array. 
 		struct Node {
 
-			Node* next = nullptr; //The Nodes next pointer if a collision occurs and requires chaining 
-
 			V value;
 			int key;
 			int index;
-			bool collision = false;
+			//bool collision = false;
 
 			Node(int key, V value, int index) {
 				this->key = key;
 				this->value = value;
 				this->index = index;
-
 			}
 
 			Node() {}
 
 		};
 
-		//Constructors
+		//Hashtable class constuctors 
 		hashtable(unsigned int size)
 		{
 			table = new Node*[size]();
 			table_size = size;
+		}
 
+		hashtable(unsigned int size, bool midsquare_hashing, string filename)
+		{
+			table = new Node*[size]();
+			table_size = size;
+			this->midsquare_hashing = midsquare_hashing;
+			this->filename = filename;
+
+			try
+			{
+				file.exceptions(ifstream::badbit | ifstream::failbit);
+				file.open("Hashing_Analysis\\" + filename);
+			}
+
+			catch (const ifstream::failure& e)
+			{
+				cout << "Tried opening file with windows syntax, Attempting Linux syntax: " << endl;
+				file.open(filename);
+			}
+
+
+		}
+
+		hashtable(unsigned int size, bool midsquare_hashing)
+		{
+			table = new Node*[size]();
+			table_size = size;
+			this->midsquare_hashing = midsquare_hashing;
 		}
 
 		hashtable() {
@@ -56,35 +81,36 @@ namespace openaddr_table {
 		~hashtable()
 		{
 			delete[] table;
+			file.flush();
+			file.close();
 		}
+
+		//Mutators
+		void add(const int &key, const V &value);
+		Node* get(const int &key);
 
 		//Accessors
 		unsigned int get_table_size() { return table_size; }
 		unsigned int get_num_collisions() { return num_collisions; }
 		float get_load_factor() { return load_factor; }
-		
-		//Mutators
-		void add(const int &key, const V &value);
-		Node* get(const int &key);
-
 
 		//Hashing Function
-		int key_mod_table(int key);	//mid-square hashing function for Experiment 1. 
+		int midsquare_hash(int key);	//mid-square hashing function for Experiment 1. 
 
 	private:
+		ofstream file;
+		string filename;
 		Node** table;	//An array of Node pointers. 
 		unsigned int num_elements = 0;
 		unsigned int num_collisions = 0;
 		unsigned int table_size;
 		const int max_bits = 16;
 		float load_factor = 0;
-		unsigned int num_array_elements = 0;
-
-
+		bool midsquare_hashing = false; //By default use key-mod-table hashing. 
 	};
 
 	template <typename V>
-	int hashtable<V>::key_mod_table(int key)
+	int hashtable<V>::midsquare_hash(int key)
 	{
 		//For this hashing function. Utilizing reinterpreted cast will be useful in getting an integer value from the key. I need to be careful of not creating hash values that are out of bounds. 
 		//If the passed through type is a string, the ascii value used for hashing will be generated from an average of ascii values per character
@@ -95,8 +121,21 @@ namespace openaddr_table {
 		//127^2 = 40,000
 		//The table size for experiment will be 127. 
 		//127 in binary is 1111111, 7 bits. 
-	
-		return key % table_size; 
+
+		int key_bits = log2(((table_size-1) * 3) * ((table_size-1) * 3)) + 1;
+		int table_bits = log2(table_size-1) + 1;
+		int difference = key_bits - table_bits;
+
+		if (difference % 2 != 0)
+			difference += 1;
+
+		int half = difference / 2;
+		int key_squared = key * key;
+		key_squared = key_squared >> half;
+		key_squared = key_squared % table_size;
+
+
+		return key_squared;
 	}
 
 	template <typename V>
@@ -105,13 +144,17 @@ namespace openaddr_table {
 		int hash;
 
 
-		if (num_array_elements == table_size)
+		if (num_elements == table_size)
 		{
 			cout << "Table full" << endl;
 			return;
 		}
 
-		hash = key_mod_table(key);
+		if (midsquare_hashing)
+			hash = midsquare_hash(key);
+		else
+			hash = key % table_size;
+
 
 		Node* node = new Node(key, value, hash);
 
@@ -122,41 +165,27 @@ namespace openaddr_table {
 		if (!table[hash])
 		{
 			this->table[hash] = node;
-			num_array_elements++;
 			return;
 		}
 
 		else {
-
-			Node* temp = table[hash];
-
-			if (!temp->collision)
+			int index = hash;
+			num_collisions++;
+			while (table[index] && index)
 			{
-				cout << "Collision Detectected! Key: " << key << " Index: " << hash;
-				cout << " Load: " << this->load_factor << endl;
+				index++;
 
-				temp->collision = true;
-
-				num_collisions++;
-
+				if (index == table_size - 1)
+					index = 0;
 			}
-
-
-
-			while (temp->next)
-			{
-				temp = temp->next;
-			}
-			temp->next = node;
-
+			table[index] = node; 
 		}
-
 	}
-	
+
 	template <typename V>
 	typename hashtable<V>::Node* hashtable<V>::get(const int &key) {
 
-		Node* node = table[key_mod_table(key)];
+		Node* node = table[midsquare_hash(key)];
 
 		if (node->next)	//indicating that there is a collision. 
 		{
