@@ -63,7 +63,8 @@ namespace chaining_table {
 				
 			catch (const ifstream::failure& e)
 			{
-				cout << "Error opening file" << endl;
+				cout << "Tried opening file with windows syntax, Attempting Linux syntax: " << endl;
+				file.open(filename);
 			}
 			
 		
@@ -200,8 +201,6 @@ namespace chaining_table {
 					
 
 				}
-
-
 				
 				while (temp->next)
 				{
