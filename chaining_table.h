@@ -148,13 +148,6 @@ namespace chaining_table {
 	{
 		int hash; 
 	
-
-			// if(num_array_elements == table_size)
-			// {
-			// 	cout << "Table full" << endl;
-			// 	return; 
-			// }
-
 			if(midsquare_hashing)
 				hash = midsquare_hash(key);
 			else
@@ -191,6 +184,7 @@ namespace chaining_table {
 				}
 				temp->next = node;
 
+			
 			}
 
 			try 
@@ -207,21 +201,14 @@ namespace chaining_table {
 	template <typename V>
 	typename hashtable<V>::Node* hashtable<V>::get(const int &key) {
 
-		Node* node = table[midsquare_hash(key)];
+		Node node; 
 
-		if (node->next)	//indicating that there is a collision. 
+		if(midsquare_hashing)
+			node = table[midsquare_hash(key)];
+		else
 		{
-			while (node->next)
-			{
-				if (node->key == key)
-				{
-					return node;
-				}
-
-				node = node->next;
-			}
-		}
-
+			node = table[(key % table_size)];
+		}		
 
 		return node;
 	}

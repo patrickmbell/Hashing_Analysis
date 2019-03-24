@@ -198,18 +198,21 @@ namespace openaddr_table {
 
 		Node* node = table[midsquare_hash(key)];
 
-		if (node->next)	//indicating that there is a collision. 
-		{
-			while (node->next)
-			{
-				if (node->key == key)
-				{
-					return node;
-				}
+		
 
-				node = node->next;
-			}
-		}
+
+		// if (node->next)	//indicating that there is a collision. 
+		// {
+		// 	while (node->next)
+		// 	{
+		// 		if (node->key == key)
+		// 		{
+		// 			return node;
+		// 		}
+
+		// 		node = node->next;
+		// 	}
+		// }
 
 
 		return node;

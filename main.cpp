@@ -105,9 +105,9 @@ int main() {
 
 
 
-	chaining_table::hashtable<string> table1(47, false, "size_1.csv");
-	chaining_table::hashtable<string> table2(100,false, "size_2.csv");
-	chaining_table::hashtable<string> table3(250,false, "size_3.csv");
+	chaining_table::hashtable<string> table1(47, true, "size_1.csv");
+	chaining_table::hashtable<string> table2(100,true, "size_2.csv");
+	chaining_table::hashtable<string> table3(250,true, "size_3.csv");
 
 	test_hashtable(table1);
 	test_hashtable(table2);
