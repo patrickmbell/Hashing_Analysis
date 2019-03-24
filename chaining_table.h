@@ -149,11 +149,11 @@ namespace chaining_table {
 		int hash; 
 	
 
-			if(num_array_elements == table_size)
-			{
-				cout << "Table full" << endl;
-				return; 
-			}
+			// if(num_array_elements == table_size)
+			// {
+			// 	cout << "Table full" << endl;
+			// 	return; 
+			// }
 
 			if(midsquare_hashing)
 				hash = midsquare_hash(key);

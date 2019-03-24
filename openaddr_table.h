@@ -55,16 +55,15 @@ namespace openaddr_table {
 			try
 			{
 				file.exceptions(ifstream::badbit | ifstream::failbit);
-				file.open("Hashing_Analysis\\" + filename);
+				file.open(filename);
+				file << 0 << ',' << 0 << endl; 
 			}
-
+				
 			catch (const ifstream::failure& e)
 			{
 				cout << "Tried opening file with windows syntax, Attempting Linux syntax: " << endl;
 				file.open(filename);
 			}
-
-
 		}
 
 		hashtable(unsigned int size, bool midsquare_hashing)
@@ -83,6 +82,8 @@ namespace openaddr_table {
 			delete[] table;
 			file.flush();
 			file.close();
+
+			cout << "File Closed" << endl; 
 		}
 
 		//Mutators
@@ -180,6 +181,16 @@ namespace openaddr_table {
 			}
 			table[index] = node; 
 		}
+
+		try
+		{
+			file << load_factor << ',' << num_collisions << endl; 
+		}
+		catch(const ifstream::failure& e)
+		{
+			cout << "Error writing to file" << endl; 
+		}
+		
 	}
 
 	template <typename V>
