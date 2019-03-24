@@ -84,8 +84,6 @@ void test_hashtable(openaddr_table::hashtable<V> &table)
 			search = map.find(rand_key);
 		}
 
-		cout << rand_key << endl;
-
 		map.emplace(rand_key, true);
 
 		table.add(rand_key, "BDP");
@@ -101,9 +99,14 @@ int main() {
 	chaining_table::hashtable<string> table3(100, true);
 	chaining_table::hashtable<string> table4(100, false);*/
 
-	chaining_table::hashtable<string> table1(90, false, "size_1.csv");
-	chaining_table::hashtable<string> table2(127, false, "size_2.csv");
-	chaining_table::hashtable<string> table3(300, false, "size_3.csv");
+	// chaining_table::hashtable<string> table1(90, false, "size_1.csv");
+	// chaining_table::hashtable<string> table2(127, false, "size_2.csv");
+	// chaining_table::hashtable<string> table3(300, false, "size_3.csv");
+
+	chaining_table::hashtable<string> table1(30, true, "size_1.csv");
+	chaining_table::hashtable<string> table2(113, true, "size_2.csv");
+	chaining_table::hashtable<string> table3(195, true, "size_3.csv");
+
 
 	test_hashtable(table1);
 	test_hashtable(table2);
