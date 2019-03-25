@@ -84,6 +84,8 @@ void test_hashtable(openaddr_table::hashtable<V> &table)
 			search = map.find(rand_key);
 		}
 
+		//cout << rand_key << endl;
+
 		map.emplace(rand_key, true);
 
 		table.add(rand_key, "BDP");
@@ -103,19 +105,33 @@ int main() {
 	// chaining_table::hashtable<string> table2(127, false, "size_2.csv");
 	// chaining_table::hashtable<string> table3(300, false, "size_3.csv");
 
-	chaining_table::hashtable<string> table1(30, true, "size_1.csv");
-	chaining_table::hashtable<string> table2(113, true, "size_2.csv");
-	chaining_table::hashtable<string> table3(195, true, "size_3.csv");
+	// chaining_table::hashtable<string> table1(30, true, "size_1.csv");
+	// chaining_table::hashtable<string> table2(113, true, "size_2.csv");
+	// chaining_table::hashtable<string> table3(195, true, "size_3.csv");
 
+	ofstream summary("collisions_summary.txt");
+
+
+
+	chaining_table::hashtable<string> table1(47, false, "size_1.csv");
+	chaining_table::hashtable<string> table2(100,false, "size_2.csv");
+	chaining_table::hashtable<string> table3(250,false, "size_3.csv");
 
 	test_hashtable(table1);
 	test_hashtable(table2);
 	test_hashtable(table3);
 
 
-	/*cout << "Openaddressing/Midsquare Hash Number of Collisions " << table2.get_num_collisions() << endl;
-	cout << "Chaining/Midsquare Hash Number of Collisions " << table3.get_num_collisions() << endl;
-	cout << "Chaining/Key Mod Table Number of Collisions " << table4.get_num_collisions() << endl;*/
+	// summary << "Type: Chaining Table Size: " << table1.get_table_size() << " Number of Collisions: " << table1.get_num_collisions() << endl;
+	// summary << "Type: Chaining Table Size: " << table2.get_table_size() << " Number of Collisions: " << table2.get_num_collisions() << endl;
+	// summary << "Type: Chaining Table Size: " << table3.get_table_size() << " Number of Collisions: " << table3.get_num_collisions() << endl;
+
+	summary << table1.get_num_collisions() << endl;
+	summary << table2.get_num_collisions()	<< endl; 
+	summary << table3.get_num_collisions()	<< endl; 
+
+	summary.flush();
+	summary.close(); 
 
 	return 0; 
 }
